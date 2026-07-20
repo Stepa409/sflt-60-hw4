@@ -1,0 +1,106 @@
+---
+- name: Проверить поддержку семейства ОС
+  ansible.builtin.assert:
+    that:
+      - ansible_os_family in ['Debian', 'RedHat']
+    fail_msg: >-
+      Роль поддерживает Debian/Ubuntu и RHEL/CentOS/Rocky/AlmaLinux.
+
+- name: Загрузить переменные семейства ОС
+  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
+
+- name: Установить Apache
+  ansible.builtin.package:
+    name: "{{ apache_package_name }}"
+    state: present
+
+- name: Определить первый физический диск
+  ansible.builtin.set_fact:
+    apache_first_disk_name: >-
+      {{ ansible_devices.keys()
+         | reject('match', '^(loop|ram|fd|sr|dm-|zram)')
+         | list
+         | sort
+         | first
+         | default('не определён') }}
+
+- name: Установить конфигурацию Apache
+  ansible.builtin.template:
+    src: apache-info.conf.j2
+    dest: "{{ apache_config_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Перезапустить Apache
+
+- name: Создать информационную главную страницу
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: "{{ apache_document_root }}/index.html"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Установить firewalld на RedHat-системе
+  ansible.builtin.package:
+    name: firewalld
+    state: present
+  when:
+    - apache_manage_firewall | bool
+    - apache_firewall_backend == 'firewalld'
+
+- name: Запустить firewalld и добавить его в автозагрузку
+  ansible.builtin.service:
+    name: firewalld
+    state: started
+    enabled: true
+  when:
+    - apache_manage_firewall | bool
+    - apache_firewall_backend == 'firewalld'
+
+- name: Открыть HTTP в firewalld
+  ansible.posix.firewalld:
+    service: http
+    permanent: true
+    immediate: true
+    state: enabled
+  when:
+    - apache_manage_firewall | bool
+    - apache_firewall_backend == 'firewalld'
+
+- name: Установить UFW на Debian-системе
+  ansible.builtin.package:
+    name: ufw
+    state: present
+  when:
+    - apache_manage_firewall | bool
+    - apache_firewall_backend == 'ufw'
+
+- name: Разрешить входящие подключения к HTTP в UFW
+  community.general.ufw:
+    rule: allow
+    port: "{{ apache_http_port }}"
+    proto: tcp
+  when:
+    - apache_manage_firewall | bool
+    - apache_firewall_backend == 'ufw'
+
+- name: Запустить Apache и добавить его в автозагрузку
+  ansible.builtin.service:
+    name: "{{ apache_service_name }}"
+    state: started
+    enabled: true
+
+- name: Применить отложенные обработчики до HTTP-проверки
+  ansible.builtin.meta: flush_handlers
+
+- name: Проверить ответ веб-сервера
+  ansible.builtin.uri:
+    url: "http://127.0.0.1:{{ apache_http_port }}/"
+    method: GET
+    status_code: 200
+    return_content: false
+  register: apache_http_check
+  retries: 5
+  delay: 2
+  until: apache_http_check.status == 200

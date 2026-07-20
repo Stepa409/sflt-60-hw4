@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  author: Andrey Stepanov
+  description: Установка Apache и публикация характеристик управляемого хоста
+  license: MIT
+  min_ansible_version: "2.14"
+  platforms:
+    - name: Debian
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+    - name: EL
+      versions:
+        - "8"
+        - "9"
+dependencies: []

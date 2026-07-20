@@ -1,0 +1,52 @@
+---
+- name: Проверить результат выполнения домашнего задания
+  hosts: managed
+  become: true
+  gather_facts: true
+
+  vars:
+    expected_motd_fragments:
+      - "{{ ansible_hostname }}"
+      - "Хорошего дня, системный администратор!"
+
+  tasks:
+    - name: Проверить каталог распакованного архива
+      ansible.builtin.stat:
+        path: "{{ archive_extract_dir }}/{{ archive_directory_name }}"
+      register: archive_directory
+
+    - name: Прочитать MOTD
+      ansible.builtin.slurp:
+        src: /etc/motd
+      register: motd_file
+
+    - name: Собрать сведения о службах
+      ansible.builtin.service_facts:
+
+    - name: Проверить HTTP-ответ Apache
+      ansible.builtin.uri:
+        url: "http://127.0.0.1/"
+        method: GET
+        status_code: 200
+        return_content: true
+      register: apache_page
+
+    - name: Подтвердить ожидаемое состояние системы
+      ansible.builtin.assert:
+        that:
+          - archive_directory.stat.isdir | default(false)
+          - "ansible_facts.services.get('tuned.service', {}).get('state') == 'running'"
+          - "ansible_facts.services.get('apache2.service', {}).get('state') == 'running'"
+          - "item in (motd_file.content | b64decode)"
+        fail_msg: Один или несколько результатов домашнего задания не подтверждены.
+        success_msg: Архив, MOTD, tuned и Apache успешно проверены.
+      loop: "{{ expected_motd_fragments }}"
+
+    - name: Проверить характеристики на веб-странице
+      ansible.builtin.assert:
+        that:
+          - "'CPU' in apache_page.content"
+          - "'RAM' in apache_page.content"
+          - "'Первый HDD' in apache_page.content"
+          - "'IP-адрес' in apache_page.content"
+        success_msg: Веб-страница содержит все требуемые характеристики.

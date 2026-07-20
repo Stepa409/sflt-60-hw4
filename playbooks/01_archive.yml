@@ -1,0 +1,40 @@
+---
+- name: Скачать и распаковать архив Apache Kafka
+  hosts: managed
+  become: true
+  gather_facts: false
+
+  vars:
+    archive_path: "{{ archive_download_dir }}/{{ archive_url | basename }}"
+
+  tasks:
+    - name: Создать каталог для загрузки
+      ansible.builtin.file:
+        path: "{{ archive_download_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Скачать архив Apache Kafka
+      ansible.builtin.get_url:
+        url: "{{ archive_url }}"
+        dest: "{{ archive_path }}"
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Создать каталог для распаковки
+      ansible.builtin.file:
+        path: "{{ archive_extract_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Распаковать архив Apache Kafka
+      ansible.builtin.unarchive:
+        src: "{{ archive_path }}"
+        dest: "{{ archive_extract_dir }}"
+        remote_src: true
+        creates: "{{ archive_extract_dir }}/{{ archive_directory_name }}"

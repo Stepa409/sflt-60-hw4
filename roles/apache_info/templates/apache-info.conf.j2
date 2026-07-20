@@ -1,0 +1,8 @@
+# Этот файл управляется Ansible. Ручные изменения будут перезаписаны.
+DirectoryIndex index.html
+
+<Directory "{{ apache_document_root }}">
+    Options -Indexes
+    AllowOverride None
+    Require all granted
+</Directory>

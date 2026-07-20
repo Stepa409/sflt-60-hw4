@@ -1,0 +1,52 @@
+
+PLAY [Развернуть информационную страницу Apache] *******************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [localhost]
+
+TASK [apache_info : Проверить поддержку семейства ОС] **************************
+ok: [localhost] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+TASK [apache_info : Загрузить переменные семейства ОС] *************************
+ok: [localhost]
+
+TASK [apache_info : Установить Apache] *****************************************
+ok: [localhost]
+
+TASK [apache_info : Определить первый физический диск] *************************
+ok: [localhost]
+
+TASK [apache_info : Установить конфигурацию Apache] ****************************
+ok: [localhost]
+
+TASK [apache_info : Создать информационную главную страницу] *******************
+ok: [localhost]
+
+TASK [apache_info : Установить firewalld на RedHat-системе] ********************
+skipping: [localhost]
+
+TASK [apache_info : Запустить firewalld и добавить его в автозагрузку] *********
+skipping: [localhost]
+
+TASK [apache_info : Открыть HTTP в firewalld] **********************************
+skipping: [localhost]
+
+TASK [apache_info : Установить UFW на Debian-системе] **************************
+ok: [localhost]
+
+TASK [apache_info : Разрешить входящие подключения к HTTP в UFW] ***************
+ok: [localhost]
+
+TASK [apache_info : Запустить Apache и добавить его в автозагрузку] ************
+ok: [localhost]
+
+TASK [apache_info : Применить отложенные обработчики до HTTP-проверки] *********
+
+TASK [apache_info : Проверить ответ веб-сервера] *******************************
+ok: [localhost]
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=11   changed=0    unreachable=0    failed=0    skipped=3    rescued=0    ignored=0

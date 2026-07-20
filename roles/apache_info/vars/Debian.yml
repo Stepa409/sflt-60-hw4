@@ -1,0 +1,6 @@
+---
+apache_package_name: apache2
+apache_service_name: apache2
+apache_document_root: /var/www/html
+apache_config_path: /etc/apache2/conf-enabled/ansible-info-page.conf
+apache_firewall_backend: ufw

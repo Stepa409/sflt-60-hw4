@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Характеристики {{ ansible_hostname }}</title>
+  <style>
+    body { font-family: sans-serif; max-width: 760px; margin: 3rem auto; padding: 0 1rem; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #bbb; padding: .65rem; text-align: left; }
+    th { width: 35%; background: #f2f2f2; }
+  </style>
+</head>
+<body>
+  <h1>Характеристики {{ ansible_hostname }}</h1>
+  <table>
+    <tr>
+      <th>CPU</th>
+      <td>{{ ansible_processor_vcpus | default(ansible_processor_count | default('не определено')) }} vCPU</td>
+    </tr>
+    <tr>
+      <th>RAM</th>
+      <td>{{ ansible_memtotal_mb | default('не определено') }} МБ</td>
+    </tr>
+    <tr>
+      <th>Первый HDD</th>
+      <td>
+        {{ apache_first_disk_name }} —
+        {{ ansible_devices[apache_first_disk_name].size
+           if apache_first_disk_name in ansible_devices
+           else 'не определено' }}
+      </td>
+    </tr>
+    <tr>
+      <th>IP-адрес</th>
+      <td>
+        {{ ansible_default_ipv4.address
+           | default(ansible_all_ipv4_addresses | default([]) | first)
+           | default('не определён', true) }}
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

@@ -1,0 +1,17 @@
+---
+- name: Установить и запустить tuned
+  hosts: managed
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Установить пакет tuned
+      ansible.builtin.package:
+        name: tuned
+        state: present
+
+    - name: Запустить tuned и добавить его в автозагрузку
+      ansible.builtin.service:
+        name: tuned
+        state: started
+        enabled: true

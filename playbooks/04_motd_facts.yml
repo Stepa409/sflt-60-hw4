@@ -1,0 +1,23 @@
+---
+- name: Установить MOTD с hostname и IP-адресом
+  hosts: managed
+  become: true
+  gather_facts: true
+
+  vars:
+    host_ip: >-
+      {{ ansible_default_ipv4.address |
+         default(ansible_all_ipv4_addresses | default([]) | first) |
+         default('не определён', true) }}
+
+  tasks:
+    - name: Сформировать системное приветствие из Ansible facts
+      ansible.builtin.copy:
+        content: |
+          Добро пожаловать на {{ ansible_hostname }}!
+          IP-адрес управляемого хоста: {{ host_ip }}
+          Хорошего дня, системный администратор!
+        dest: /etc/motd
+        owner: root
+        group: root
+        mode: "0644"

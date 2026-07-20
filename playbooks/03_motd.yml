@@ -1,0 +1,14 @@
+---
+- name: Изменить системное приветствие
+  hosts: managed
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Записать приветствие из переменной в MOTD
+      ansible.builtin.copy:
+        content: "{{ motd_message }}\n"
+        dest: /etc/motd
+        owner: root
+        group: root
+        mode: "0644"

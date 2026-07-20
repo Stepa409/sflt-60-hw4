@@ -1,0 +1,9 @@
+---
+- name: Развернуть информационную страницу Apache
+  hosts: managed
+  become: true
+  gather_facts: true
+
+  roles:
+    - role: apache_info
+      apache_manage_firewall: true
