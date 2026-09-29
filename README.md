@@ -23,5 +23,9 @@ Terraform-конфигурация создаёт строго требуемы�
 - `http://84.201.170.119` возвращает дефолтную страницу **Welcome to nginx!**.
 
 ## Скриншоты
+<img width="2730" height="580" alt="image" src="https://github.com/user-attachments/assets/cbf1cf5b-575a-4be3-9722-817448a27f77" />
+<img width="2730" height="580" alt="image" src="https://github.com/user-attachments/assets/e39e4ce1-60eb-44c0-9542-2168ac495a14" />
+<img width="1764" height="1132" alt="image" src="https://github.com/user-attachments/assets/c4344a0b-5450-4835-8e80-80ef07b4457e" />
+
 
 Здесь будут приложены реальные скриншоты из консоли Yandex Cloud и браузера: активный балансировщик с двумя здоровыми целями, а также дефолтная страница Nginx по внешнему IP.
