@@ -24,7 +24,7 @@ Terraform-конфигурация создаёт строго требуемы�
 
 ## Скриншоты
 <img width="2730" height="580" alt="image" src="https://github.com/user-attachments/assets/cbf1cf5b-575a-4be3-9722-817448a27f77" />
-<img width="2730" height="580" alt="image" src="https://github.com/user-attachments/assets/e39e4ce1-60eb-44c0-9542-2168ac495a14" />
+<img width="1536" height="1838" alt="image" src="https://github.com/user-attachments/assets/5ad7a4b3-20b2-4f7a-b594-5cc4476d305a" />
 <img width="1764" height="1132" alt="image" src="https://github.com/user-attachments/assets/c4344a0b-5450-4835-8e80-80ef07b4457e" />
 
 
